@@ -14,6 +14,7 @@
           v-for='node in nodes'
           :nodeData='node'
           :key='node.id'
+          @move='onMove'
         />
       </svg>
     </main>
@@ -31,6 +32,7 @@ export default {
   components: {
     GraphNode
   },
+
   data: () => ({
     nodes: [
       { id: 1, x: 200, y: 100, w: 100, h: 50 }
@@ -38,7 +40,17 @@ export default {
     edges: [
 
     ]
-  })
+  }),
+
+  methods: {
+    onMove ({ x, y, id }) {
+      const node = this.nodes.find(node => node.id === id)
+      if (node) {
+        node.x = x
+        node.y = y
+      }
+    }
+  }
 }
 </script>
 

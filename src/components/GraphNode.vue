@@ -1,6 +1,7 @@
 <template>
   <g
-    transform='translate(0,0)'
+    :transform='svgLocation'
+    ref='svgG'
   >
     <ellipse
       :cx='centreX'
@@ -22,15 +23,32 @@
 </template>
 
 <script>
+import interact from 'interactjs'
+
 export default {
   name: 'graph-node',
+
   props: {
     nodeData: {
       type: Object,
       required: true
     }
   },
+
+  data: () => ({
+    displacement: {
+      x: 0,
+      y: 0
+    }
+  }),
+
   computed: {
+    svgLocation () {
+      const x = this.nodeData.x + this.displacement.x
+      const y = this.nodeData.y + this.displacement.y
+      return `translate(${x},${y})`
+    },
+
     centreX () {
       return this.nodeData.w
     },
@@ -57,6 +75,57 @@ export default {
 
     textY () {
       return this.nodeData.h
+    }
+  },
+
+  mounted () {
+    this.initInteractJs()
+  },
+
+  methods: {
+    initInteractJs () {
+      const interactive = interact(this.$refs.svgG)
+      interactive.draggable({
+        origin: 'self',
+        inertia: false,
+        modifiers: [
+          interact.modifiers.restrict({
+            restriction: 'parent'
+          })
+        ],
+        listeners: {
+          move: this.onElementMove,
+          end: this.onElementMoveEnd
+        }
+      })
+    },
+
+    resetDisplacement () {
+      this.displacement = {
+        x: 0,
+        y: 0
+      }
+    },
+
+    onElementMove (event) {
+      const { x0, y0 } = event
+      const { x, y } = event.page
+
+      this.displacement = {
+        x: x - x0,
+        y: y - y0
+      }
+    },
+
+    onElementMoveEnd (event) {
+      this.$emit('move',
+        {
+          x: this.nodeData.x + this.displacement.x,
+          y: this.nodeData.y + this.displacement.y,
+          id: this.nodeData.id
+        })
+
+      this.resetDisplacement()
     }
   }
 }
