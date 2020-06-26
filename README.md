@@ -1,6 +1,12 @@
 # Vue DAG drawing experiment
 
-An experiment in drawing DAGs in Vue using SVG
+An experiment in drawing DAGs in Vue using SVG. So far, this experiement shows:
+
+- creating nodes as ellipses
+- nodes can be dragged around the viewport
+- graph edges that use Vue reactivity to responsively update
+  when nodes move
+- SVG marker on the end of the directed edge
 
 ## Project setup
 
