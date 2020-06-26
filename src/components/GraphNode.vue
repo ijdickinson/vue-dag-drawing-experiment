@@ -2,6 +2,7 @@
   <g
     :transform='svgLocation'
     ref='svgG'
+    class='c-svg-g'
   >
     <ellipse
       :cx='centreX'
@@ -132,6 +133,10 @@ export default {
 </script>
 
 <style>
+.c-svg-g {
+  touch-action: none;
+}
+
 .c-graph-node {
   fill: #99c;
   stroke: #336;
