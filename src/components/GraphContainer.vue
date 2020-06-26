@@ -35,7 +35,9 @@ export default {
 
   data: () => ({
     nodes: [
-      { id: 1, x: 200, y: 100, w: 100, h: 50 }
+      { id: 1, x: 200, y: 100, w: 100, h: 50, label: 'frodo' },
+      { id: 2, x: 450, y: 400, w: 100, h: 50, label: 'sam' },
+      { id: 3, x: 600, y: 600, w: 100, h: 50, label: 'strider' }
     ],
     edges: [
 
