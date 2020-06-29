@@ -75,18 +75,15 @@ export default {
     },
 
     closestHandlePair () {
-      let d = null
+      let closestDist = null
       let closestPair = null
 
       for (const pair of this.handlePairs) {
-        if (!closestPair) {
-          d = this.distance(pair)
+        const d = this.distance(pair)
+
+        if (!closestPair || d < closestDist) {
+          closestDist = d
           closestPair = pair
-        } else {
-          if (this.distance(pair) < d) {
-            d = this.distance(pair)
-            closestPair = pair
-          }
         }
       }
 
