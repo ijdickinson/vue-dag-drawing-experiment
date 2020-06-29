@@ -44,19 +44,19 @@ export default {
 
   computed: {
     startX () {
-      return this.closestHandlePair.closestPair.fromHandle.x
+      return this.closestHandlePair.fromHandle.x
     },
 
     startY () {
-      return this.closestHandlePair.closestPair.fromHandle.y
+      return this.closestHandlePair.fromHandle.y
     },
 
     endX () {
-      return this.closestHandlePair.closestPair.toHandle.x
+      return this.closestHandlePair.toHandle.x
     },
 
     endY () {
-      return this.closestHandlePair.closestPair.toHandle.y
+      return this.closestHandlePair.toHandle.y
     },
 
     /* Cartesian product of the from handles and the to handles */
@@ -64,29 +64,33 @@ export default {
       const fromHandles = this.fromNodePoints.handles
       const toHandles = this.toNodePoints.handles
 
-      return fromHandles.map(fromHandle => {
-        return toHandles.map(toHandle => ({ fromHandle, toHandle }))
-      }).flat()
+      const pairs = []
+      for (const fromHandle of fromHandles) {
+        for (const toHandle of toHandles) {
+          pairs.push({ fromHandle, toHandle })
+        }
+      }
+
+      return pairs
     },
 
     closestHandlePair () {
-      const vm = this
+      let d = null
+      let closestPair = null
 
-      return this.handlePairs.reduce(
-        function ({ distance, closestPair }, pair) {
-          if (!closestPair) {
-            return { distance: vm.distance(pair), closestPair: pair }
-          } else {
-            const d = vm.distance(pair)
-            if (d < distance) {
-              return { distance: d, closestPair: pair }
-            }
-
-            return { distance, closestPair }
+      for (const pair of this.handlePairs) {
+        if (!closestPair) {
+          d = this.distance(pair)
+          closestPair = pair
+        } else {
+          if (this.distance(pair) < d) {
+            d = this.distance(pair)
+            closestPair = pair
           }
-        },
-        {}
-      )
+        }
+      }
+
+      return closestPair
     }
   },
 
@@ -112,10 +116,6 @@ export default {
       }
 
       return {
-        centre: {
-          x: node.x + node.w,
-          y: node.y + node.h
-        },
         handles: [
           { x: node.x + node.w, y: node.y }, // north
           { x: node.x + node.w * 2, y: node.y + node.h }, // east
