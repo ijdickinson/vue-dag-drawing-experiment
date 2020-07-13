@@ -112,12 +112,15 @@ export default {
         return {}
       }
 
+      const x = node.x + node.displacement.x
+      const y = node.y + node.displacement.y
+
       return {
         handles: [
-          { x: node.x + node.w, y: node.y }, // north
-          { x: node.x + node.w * 2, y: node.y + node.h }, // east
-          { x: node.x + node.w, y: node.y + node.h * 2 }, // south
-          { x: node.x, y: node.y + node.h } // west
+          { x: x + node.w, y: y }, // north
+          { x: x + node.w * 2, y: y + node.h }, // east
+          { x: x + node.w, y: y + node.h * 2 }, // south
+          { x: x, y: y + node.h } // west
         ]
       }
     },

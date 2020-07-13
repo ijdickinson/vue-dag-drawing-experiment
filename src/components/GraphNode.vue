@@ -45,8 +45,8 @@ export default {
 
   computed: {
     svgLocation () {
-      const x = this.nodeData.x + this.displacement.x
-      const y = this.nodeData.y + this.displacement.y
+      const x = this.nodeData.x + this.nodeData.displacement.x
+      const y = this.nodeData.y + this.nodeData.displacement.y
       return `translate(${x},${y})`
     },
 
@@ -109,24 +109,19 @@ export default {
     },
 
     onElementMove (event) {
-      const { x0, y0 } = event
       const { x, y } = event.page
+      const { x0, y0 } = event
 
-      this.displacement = {
-        x: x - x0,
-        y: y - y0
-      }
+      this.$emit('move',
+        {
+          x: x - x0,
+          y: y - y0,
+          id: this.nodeData.id
+        })
     },
 
     onElementMoveEnd (event) {
-      this.$emit('move',
-        {
-          x: this.nodeData.x + this.displacement.x,
-          y: this.nodeData.y + this.displacement.y,
-          id: this.nodeData.id
-        })
-
-      this.resetDisplacement()
+      this.$emit('move-end', { id: this.nodeData.id })
     }
   }
 }

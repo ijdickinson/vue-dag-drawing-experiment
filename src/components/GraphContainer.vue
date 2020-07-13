@@ -15,6 +15,7 @@
           :nodeData='node'
           :key='node.id'
           @move='onMove'
+          @move-end='onMoveEnd'
         />
         <graph-edge
           v-for='edge in edges'
@@ -43,9 +44,9 @@ export default {
 
   data: () => ({
     nodes: {
-      1: { id: 1, x: 200, y: 100, w: 100, h: 50, label: 'frodo' },
-      2: { id: 2, x: 450, y: 400, w: 100, h: 50, label: 'sam' },
-      3: { id: 3, x: 600, y: 600, w: 100, h: 50, label: 'strider' }
+      1: { id: 1, x: 200, y: 100, w: 100, h: 50, label: 'frodo', displacement: { x: 0, y: 0 } },
+      2: { id: 2, x: 450, y: 400, w: 100, h: 50, label: 'sam', displacement: { x: 0, y: 0 } },
+      3: { id: 3, x: 600, y: 600, w: 100, h: 50, label: 'strider', displacement: { x: 0, y: 0 } }
     },
     edges: []
   }),
@@ -60,12 +61,28 @@ export default {
   methods: {
     onMove ({ x, y, id }) {
       const node = this.nodes[id]
-      const updatedNode = Object.assign({}, node, { x, y })
 
       if (node) {
-        this.$set(this.nodes, node.id, updatedNode)
-        this.updateAffectedEdges(updatedNode)
+        this.updateNodePosition(Object.assign({}, node, { displacement: { x, y } }))
       }
+    },
+
+    onMoveEnd ({ id }) {
+      const node = this.nodes[id]
+
+      if (node) {
+        const x = node.x + node.displacement.x
+        const y = node.y + node.displacement.y
+
+        this.updateNodePosition(
+          Object.assign({}, node, { x, y, displacement: { x: 0, y: 0 } })
+        )
+      }
+    },
+
+    updateNodePosition (node) {
+      this.$set(this.nodes, node.id, node)
+      this.updateAffectedEdges(node)
     },
 
     updateAffectedEdges (node) {
